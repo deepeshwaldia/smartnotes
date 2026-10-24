@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: 659364970402.dkr.ecr.ap-south-1.amazonaws.com/backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: username
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: password
+            - name: MONGODB_URL
+              value: "mongodb+srv://$(MONGO_USERNAME):$(MONGO_PASSWORD)@cluster0.y3eb2ya.mongodb.net/?appName=Cluster0"
